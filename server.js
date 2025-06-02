@@ -7,11 +7,17 @@ require('dotenv').config(); // Load env variables
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// ✅ Middleware
+// ✅ CORS Middleware with Allowed Origins
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://xeno-crm-frontend-iota.vercel.app'
+];
+
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: allowedOrigins,
   credentials: true
 }));
+
 app.use(express.json());
 
 // ✅ Import Models
@@ -21,12 +27,12 @@ const Campaign = require('./models/Campaign');
 // ✅ Import Routes
 const aiRoutes = require('./routes/ai');
 const authRoutes = require('./routes/auth');
-const campaignRoutes = require('./routes/campaigns'); // ✅ NEW
+const campaignRoutes = require('./routes/campaigns');
 
 // ✅ Use Routes
 app.use('/api/ai', aiRoutes);
 app.use('/api', authRoutes);
-app.use('/api', campaignRoutes); // ✅ NEW
+app.use('/api', campaignRoutes);
 
 // ✅ Health check route
 app.get('/', (req, res) => {
