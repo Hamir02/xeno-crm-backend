@@ -1,13 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const User = require('./models/User');
 const cors = require('cors');
-require('dotenv').config(); // Load env variables
+require('dotenv').config(); // Load environment variables
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// ✅ CORS Middleware with Allowed Origins
+// ✅ CORS settings
 const allowedOrigins = [
   'http://localhost:3000',
   'https://xeno-crm-frontend-iota.vercel.app'
@@ -34,12 +33,12 @@ app.use('/api/ai', aiRoutes);
 app.use('/api', authRoutes);
 app.use('/api', campaignRoutes);
 
-// ✅ Health check route
+// ✅ Health check
 app.get('/', (req, res) => {
   res.send('Xeno CRM Backend is working ✅');
 });
 
-// ✅ Add Customer (Optional Direct Route)
+// ✅ Add Customer directly (optional)
 app.post('/api/customers', async (req, res) => {
   try {
     const newCustomer = await Customer.create(req.body);
@@ -49,7 +48,7 @@ app.post('/api/customers', async (req, res) => {
   }
 });
 
-// ✅ Send Campaign Route
+// ✅ Send Campaign logic
 app.post('/api/send-campaign/:id', async (req, res) => {
   try {
     const campaign = await Campaign.findById(req.params.id);
@@ -76,13 +75,14 @@ app.post('/api/send-campaign/:id', async (req, res) => {
       totalMatched: matchedCustomers.length,
       deliveryLogs,
     });
+
   } catch (error) {
     console.error('❌ ERROR WHILE SENDING CAMPAIGN:', error);
     res.status(500).json({ error: 'Failed to send campaign' });
   }
 });
 
-// ✅ MongoDB Connection
+// ✅ Connect to MongoDB and start server
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('MongoDB Connected ✅');
